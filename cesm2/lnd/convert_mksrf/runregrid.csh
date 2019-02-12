@@ -4,7 +4,7 @@
 #
 #SBATCH -J regridding
 #SBATCH -n 1
-#SBATCH -t 00:30:00
+#SBATCH -t 02:30:00
 #SBATCH -A P93300606
 #SBATCH -p dav
 #SBATCH --mem=8G
@@ -13,4 +13,5 @@
 #
 setenv DIN_LOC_ROOT /gpfs/fs1/p/cesmdata/cseg/inputdata
 module load ncl
-ncl regrid_GLCMEC_n_PFT.ncl
+#ncl regrid_GLCMEC_n_PFT.ncl
+ncl regrid_NH_GIA_on_top.ncl
