@@ -1,7 +1,7 @@
 ;
-; regrid_NH_GIA_on_top.ncl
+; regrid_GIA_glc.ncl
 ;
-; Regrid the Noth. Hemi. GIA data on top of the Peltier data in
+; Regrid the GIA glacier data
 ;
 begin
    ;
@@ -11,15 +11,18 @@ begin
    inglcfilename = "mksrf_glacier_lgm21ka.example.nc";
    print( "Open: "+inglcfilename );
    nc = addfile( inglcfilename, "r" )
-   outglcfilename = "mksrf_glacier_lgm21ka.wNH_GIA.c"+sdate+".nc";
+   outglcfilename = "mksrf_glacier_lgm21ka.wGIA.c"+sdate+".nc";
    print( "Open: "+outglcfilename );
    if ( systemfunc("test -f "+outglcfilename+"; echo $?" ) .eq. 0 )then
       system( "/bin/rm "+outglcfilename );
    end if
    nco = addfile( outglcfilename, "c" )
-   ingiafilename = "/glade/u/home/mpetrini/forErik/LGM_TOPO/HUY3-SCEAN1D_21_cism4km.nc"
+   ingiafilename = "/gpfs/u/home/sbradley/ERIK/Masks_USGS-huy3-S1D_21_10min.nc"
    print( "Open: "+ingiafilename );
    ncgia = addfile( ingiafilename, "r" )
+   ingiaofilename = "/gpfs/u/home/sbradley/ERIK/Orog_USGS-huy3-S1D_21_10min.nc"
+   print( "Open: "+ingiaofilename );
+   ncgiao = addfile( ingiaofilename, "r" )
    ;
    ; Get the elevation bins from the glacier dataset
    ;
@@ -27,14 +30,12 @@ begin
    z_edge = nc->BIN_EDGES
    nlat = dimsizes(nc->LAT)
    nlon = dimsizes(nc->LON)
-   nlatgia = dimsizes(ncgia->thk(0,:,0))
-   nlongia = dimsizes(ncgia->thk(0,0,:))
-   nlat2 = nlat / 2
-   print( nlat2 )
+   nlatgia = dimsizes(ncgia->sftgif(:,0))
+   nlongia = dimsizes(ncgia->sftgif(0,:))
    ;
-   ; Get the elevations of the 4km NH data
+   ; Get the elevations of the 4km data
    ;
-   elev = ncgia->thk(0,:,:) + ncgia->topg(0,:,:)
+   elev = (/ ncgiao->RELIEF(:,:) /)
    pct_gec = new( (/ n_z, nlatgia, nlongia /), "float" );
    top_gec = pct_gec
    pct_gec = 0.0
@@ -48,8 +49,8 @@ begin
          do k = 0, n_z
             if ( (elev(i,j) .ge. z_edge(k)) .and. (elev(i,j) .lt. z_edge(k+1)) )then
                nfill = nfill + 1
-               pct_gec(k,i,j) = 100.0
-               top_gec(k,i,j) = elev(i,j)
+               pct_gec(k,i,j) = doubletofloat( ncgia->sftgif(i,j)*100.0 ) ; Ice fraction
+               top_gec(k,i,j) = doubletofloat( elev(i,j) )                ; Elevation
                break
             end if
          end do
@@ -70,52 +71,32 @@ begin
       end if
    end do
    ;
-   ; Regrid from the 4km NH to half degree NH
+   ; Regrid from the 4km to half degree
    ;
    print( "regrid" );
-   NHpct_gec = rcm2rgrid ( ncgia->lat, ncgia->lon, pct_gec, nc->LAT(nlat2:), nc->LON, 1 );
-   NHtop_gec = rcm2rgrid ( ncgia->lat, ncgia->lon, top_gec, nc->LAT(nlat2:), nc->LON, 1 );
+   HFpct_gec = area_conserve_remap ( ncgia->lon, ncgia->lat, pct_gec, nc->LON, nc->LAT, False );
+   HFtop_gec = area_conserve_remap ( ncgia->lon, ncgia->lat, top_gec, nc->LON, nc->LAT, False );
    do k = 0, n_z-1
       print( "k       :"+k+" z="+nc->BIN_CENTERS(k) )
-      if ( sum(NHpct_gec(k,:,:)) .gt. 0.0 )then
-         print( "avg elev:"+sum(NHtop_gec(k,:,:)*NHpct_gec(k,:,:))/sum(NHpct_gec(k,:,:)) )
-         print( "avg pct: "+avg(NHpct_gec(k,:,:)) )
+      if ( sum(HFpct_gec(k,:,:)) .gt. 0.0 )then
+         print( "avg elev:"+sum(HFtop_gec(k,:,:)*HFpct_gec(k,:,:))/sum(HFpct_gec(k,:,:)) )
+         print( "avg pct: "+avg(HFpct_gec(k,:,:)) )
       end if
-   end do
-   ;
-   ; Add the NH data to the SH data
-   ;
-   print( "Add NH to SH" );
-   new_pct_gec = (/ nc->PCT_GLC_ICESHEET /)
-   print( dimsizes(new_pct_gec) );
-   print( dimsizes(NHpct_gec(:,:,:)) )
-   new_pct_gec(:,nlat2:,:) = NHpct_gec(:,:,:)
-   new_top_gec = (/ nc->PCT_GLC_ICESHEET /)
-   new_top_gec(:,nlat2:,:) = NHtop_gec(:,:,:)
-
-   do i = 0, nlat2-1
-   do j = 0, nlon-1
-      do k = 0, n_z-1
-         if ( ismissing(new_pct_gec(k,i,j)) )then
-            new_top_gec(k,i,j) = (/ nc->BIN_CENTERS(k) /);
-         end if
-      end do
-   end do
    end do
    ; Create pct_glc, landmask, bin_centers
    bin_centers = (/ nc->BIN_CENTERS /);
    do k = 0, n_z-1
-      sump = doubletofloat(sum(new_pct_gec(k,:,:)))
+      sump = doubletofloat(sum(HFpct_gec(k,:,:)))
       if ( sump .gt. 0.0 )then
-         bin_centers(k) = (/ doubletofloat(sum(new_top_gec(k,:,:)*new_pct_gec(k,:,:)))/sump /)
+         bin_centers(k) = (/ doubletofloat(sum(HFtop_gec(k,:,:)*HFpct_gec(k,:,:)))/sump /)
       end if
    end do
-   pct_glc  = (/ new_pct_gec(0,:,:) /)
-   landmask = (/ new_pct_gec(0,:,:) /)
-   do i = 0, nlat2
+   pct_glc  = (/ HFpct_gec(0,:,:) /)
+   landmask = (/ HFpct_gec(0,:,:) /)
+   do i = 0, nlat-1
    do j = 0, nlon-1
-      pct_glc(i,j) = (/ sum(new_pct_gec(:,i,j)) /)
-      if ( new_pct_glc(i,j) .gt. 0.0d00 )then
+      pct_glc(i,j) = (/ sum(HFpct_gec(:,i,j)) /)
+      if ( pct_glc(i,j) .gt. 0.0d00 )then
          landmask(i,j) = 1.0
       end if
    end do
@@ -164,7 +145,7 @@ begin
    print( "set global attributes" );
    fileattdef( nco, nc );
    date = systemfunc( "date" );
-   desc = "Regrid using regrid_NH_GIA_on_top.ncl from: "+ingiafilename;
+   desc = "Regrid using regrid_GIA_glc.ncl from: "+ingiafilename;
    history = ""
    if ( isvar(nc@history) )then
       history = nc@history;
@@ -184,7 +165,7 @@ begin
            nco->$vars(i)$ = 0.0d00
         else
            if ( vars(i) .eq. "PCT_GLC_ICESHEET" )then
-              nco->$vars(i)$ = (/ new_pct_gec /)
+              nco->$vars(i)$ = (/ HFpct_gec /)
            else
               if ( vars(i) .eq. "BIN_CENTERS" )then
                  nco->$vars(i)$ = (/ bin_centers /)
@@ -203,4 +184,6 @@ begin
       end if
 
    end do
+   print( "" );
+   print( "Successfully, regridded file" );
 end

@@ -41,10 +41,10 @@ program convert_mksrf
   real(r8) :: dxw,dyw                     !grid increments
   real(r8) :: delta                    ! tolerance
  
-  real(r8) :: ice(nlon,nlat)            !Icemask (after lat flip)
-  real(r8) :: top(nlon,nlat)            !Topo ( " ") 
+  !real(r8) :: ice(nlon,nlat)            !Icemask (after lat flip)
+  !real(r8) :: top(nlon,nlat)            !Topo ( " ") 
   real(r8) :: Icemask(nlon,nlat)       !input ice
-  real(r8) :: Topo(nlon,nlat)            !input top (use for landmask) 
+  !real(r8) :: Topo(nlon,nlat)            !input top (use for landmask) 
   real(r8) :: lmask(nlon,nlat)               !input landmask
   real(r8) :: plmask(nlon,nlat)               !pft input landmask
   real(r8) :: pct_glacier(nlon,nlat)      !pct glacier
@@ -54,7 +54,7 @@ program convert_mksrf
   real(r8) :: pct_nat_veg(nlon,nlat)      !percent total natural veg area
   real(r8) :: pct_nat_pft(nlon,nlat,0:num_nat_pft) !percent natural pft
   real(r8) :: pct_cft(nlon,nlat,1:num_cft)         !percent cft
-  real(r8) :: landmask(nlon,nlat)         !land mask
+  !real(r8) :: landmask(nlon,nlat)         !land mask
   real(r8) :: plandmask(nlon,nlat)        !land mask
   real(r8) :: lgmlandmask(nlon,nlat)      !lgmland mask
   real(r8) :: pct_lake(nlon,nlat)         !pct lake
@@ -104,7 +104,7 @@ program convert_mksrf
   integer :: ncid                         !netCDF file id
   integer :: ncid2                        !netCDF file id 2
   integer :: ncid_pelt                    !netCDF file id
-  integer htopo_p1_id                     ! input topo file vars
+  !integer htopo_p1_id                     ! input topo file vars
   integer ice_p1_id                       ! input topo file vars
   integer ret                         ! return id
   integer :: dim1_id(1)                   !netCDF dimension id for 1-d variables
@@ -116,12 +116,12 @@ program convert_mksrf
 
 
   character(len=256) :: filei, fileig, fileil, fileiw, fileip !input filenames
-  character(len=256) :: fileog, fileol, fileop !output filenames
+  character(len=256) :: fileol, fileop !output filenames
   character(len=256) :: name,unit            !netCDF attributes
 
   integer :: ierr                          ! error code for namelist read
 
-  namelist /convert_mksrf_in/ filei, fileig, fileip, fileiw, fileil, fileog, fileop, fileol
+  namelist /convert_mksrf_in/ filei, fileig, fileip, fileiw, fileil, fileop, fileol
 
 !-----------------------------------------------------------------
   write(6,*) "Read in namelist"
@@ -137,11 +137,12 @@ program convert_mksrf
   if (ret == nf_noerr) then
 
 ! get id and var for topo 
-    call wrap_inq_varid (ncid_pelt, 'TOP', htopo_p1_id   )
-    call wrap_get_var8 (ncid_pelt, htopo_p1_id, Topo)
+    !call wrap_inq_varid (ncid_pelt, 'TOP', htopo_p1_id   )
+    !call wrap_get_var8 (ncid_pelt, htopo_p1_id, Topo)
 
 ! get id and var for ice (0-100)
-    call wrap_inq_varid (ncid_pelt, 'ICE', ice_p1_id   )
+    !call wrap_inq_varid (ncid_pelt, 'ICE', ice_p1_id   )
+    call wrap_inq_varid (ncid_pelt, 'PCT_GLACIER', ice_p1_id   )
     call wrap_get_var8 (ncid_pelt, ice_p1_id, Icemask)
 
 ! get id and var for landmask (0-100)
@@ -149,7 +150,7 @@ program convert_mksrf
     call wrap_get_var8 (ncid_pelt, landmask_id, lmask)
 
   else
-    write(6,*)'cannot open peltier file1 successfully'
+    write(6,*)'cannot open GIA file1 successfully'
     call endrun 
   endif
   ret = nf_close (ncid_pelt)
@@ -241,21 +242,21 @@ program convert_mksrf
 
 ! flip longitudes to go from -180 to 180
 ! plandmask is already from -180 to 180
-  do j = 1,nlat
+  !do j = 1,nlat
 !  jcount = 1
-   do i = 1,nlon/2
-   ice(i,j) = Icemask(i+nlon/2,j)
-   top(i,j) = Topo(i+nlon/2,j)
-   landmask(i,j) = lmask(i+nlon/2,j)
+  ! do i = 1,nlon/2
+  ! ice(i,j) = Icemask(i+nlon/2,j)
+  ! !top(i,j) = Topo(i+nlon/2,j)
+  ! landmask(i,j) = lmask(i+nlon/2,j)
+!
+!   ice(i+nlon/2,j) = Icemask(i,j)
+   !top(i+nlon/2,j) = Topo(i,j)
 
-   ice(i+nlon/2,j) = Icemask(i,j)
-   top(i+nlon/2,j) = Topo(i,j)
-
-   landmask(i+nlon/2,j) = lmask(i,j)
+!   landmask(i+nlon/2,j) = lmask(i,j)
 !   jcount = jcount+1
-   enddo
-  enddo 
-  print *,'Peltier data put in south to north format'
+!   enddo
+!  enddo 
+!  print *,'Peltier data put in south to north format'
   print *,maxval(pct_glacier)
 
  
@@ -310,17 +311,17 @@ program convert_mksrf
 
   do j = 1,nlat
    do i = 1,nlon
-    if (ice(i,j)==100.0_r8) then
-              pct_glacier(i,j) = ice(i,j)
+    if (Icemask(i,j)==100.0_r8) then
+              pct_glacier(i,j) = Icemask(i,j)
               ! Find vertical index of where topography is at
-              do k = 1, num_z
-                 if ( (top(i,j) .ge. bin_edge(k)) .and. (top(i,j) .lt. bin_edge(k+1)) )then
-                    center_sum(k)  = center_sum(k) + top(i,j)*ice(i,j)
-                    elev_weight(k) = elev_weight(k) + ice(i,j)
-                    exit
-                 end if
-              end do
-              pct_glc_ice(i,j,k) = ice(i,j)
+              !do k = 1, num_z
+                 !if ( (top(i,j) .ge. bin_edge(k)) .and. (top(i,j) .lt. bin_edge(k+1)) )then
+                    !center_sum(k)  = center_sum(k) + top(i,j)*ice(i,j)
+                    !elev_weight(k) = elev_weight(k) + ice(i,j)
+                    !exit
+                 !end if
+              !end do
+              !pct_glc_ice(i,j,k) = ice(i,j)
               pct_crop(i,j)      = 0._r8
               pct_nat_veg(i,j)   = 0._r8
               pct_nat_pft(i,j,0)  = 0._r8
@@ -333,13 +334,13 @@ program convert_mksrf
    ! error checking
    if (pct_glacier(i,j) == 100._r8 .and. pct_wetland(i,j) > 0._r8) then
          print *,' i,j,latixy,lonxy   = ',i,j,latixy(i,j),longxy(i,j)
-         print *,' ice,pctgla,pctpft0 = ',ice(i,j),pct_glacier(i,j),pct_nat_pft(i,j,0)
+         print *,' ice,pctgla,pctpft0 = ',Icemask(i,j),pct_glacier(i,j),pct_nat_pft(i,j,0)
          print *,' pctlk/wetland      = ', pct_lake(i,j), pct_wetland(i,j)
          print *,' ---------------------------------------'
     end if
     if (pct_glacier(i,j) == 100._r8 .and. pct_lake(i,j) > 0._r8) then
          print *,' i,j,latixy,lonxy   = ',i,j,latixy(i,j),longxy(i,j)
-         print *,' ice,pctgla,pctpft0 = ',ice(i,j),pct_glacier(i,j),pct_nat_pft(i,j,0)
+         print *,' ice,pctgla,pctpft0 = ',Icemask(i,j),pct_glacier(i,j),pct_nat_pft(i,j,0)
          print *,' pctlk/wetland      = ', pct_lake(i,j), pct_wetland(i,j)
          print *,' ---------------------------------------'
     end if
@@ -348,7 +349,7 @@ program convert_mksrf
 ! nanr 11/02/10 - padding the pfts to 100.
 ! set all new cells to bareground (pft1 == 100)
 ! set all new cells to something else (pft13 == 100)
-     if(landmask(i,j) == 1 .and. plandmask(i,j) == 0) then
+     if(lmask(i,j) == 1 .and. plandmask(i,j) == 0) then
 
               pct_crop(i,j)      = 0._r8
               pct_nat_veg(i,j)   = 100._r8
@@ -371,11 +372,11 @@ program convert_mksrf
   print *,'pct_nat_pft data created '
 
   ! Find bin centers
-  do k = 1, num_z
-    if ( elev_weight(k) > 0.0_r8 )then
-       bin_center(k) = center_sum(k) / elev_weight(k)
-    end if
-  end do
+  !do k = 1, num_z
+    !if ( elev_weight(k) > 0.0_r8 )then
+       !bin_center(k) = center_sum(k) / elev_weight(k)
+    !end if
+  !end do
 
 ! nanr 30sep10 - commented out b/c using 05deg lanwat mask
 ! jcount=0
@@ -402,144 +403,144 @@ program convert_mksrf
 ! create netcdf file 1
 ! -----------------------------------------------------------------
 
-  print *,'Writing netcdf file...'
+  !print *,'Writing netcdf file...'
 
-  call wrap_create (fileog, nf_clobber, ncid)
-  call wrap_put_att_text (ncid, nf_global, 'data_type', 'pct_glacier_data')
+  !call wrap_create (fileog, nf_clobber, ncid)
+  !call wrap_put_att_text (ncid, nf_global, 'data_type', 'pct_glacier_data')
 
 ! Define dimensions
 
-  call wrap_def_dim (ncid, 'lon' , nlon, dimlon_id)
-  call wrap_def_dim (ncid, 'lat' , nlat, dimlat_id)
-  call wrap_def_dim (ncid, 'z', num_z, dimz_id)
-  call wrap_def_dim (ncid, 'z_edge', num_z_edge, dimze_id)
+  !call wrap_def_dim (ncid, 'lon' , nlon, dimlon_id)
+  !call wrap_def_dim (ncid, 'lat' , nlat, dimlat_id)
+  !call wrap_def_dim (ncid, 'z', num_z, dimz_id)
+  !call wrap_def_dim (ncid, 'z_edge', num_z_edge, dimze_id)
 
 ! Define grid variables
 
-  name = 'lon'
-  unit = 'degrees east'
-  dim1_id(1) = dimlon_id
-  call wrap_def_var (ncid,'LON', nf_float, 1, dim1_id, lon_id)
-  call wrap_put_att_text (ncid, lon_id, 'long_name', name)
-  call wrap_put_att_text (ncid, lon_id, 'units'    , unit)
+  !name = 'lon'
+  !unit = 'degrees east'
+  !dim1_id(1) = dimlon_id
+  !call wrap_def_var (ncid,'LON', nf_float, 1, dim1_id, lon_id)
+  !call wrap_put_att_text (ncid, lon_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, lon_id, 'units'    , unit)
 
-  name = 'lat'
-  unit = 'degrees north'
-  dim1_id(1) = dimlat_id
-  call wrap_def_var (ncid,'LAT', nf_float, 1, dim1_id, lat_id)
-  call wrap_put_att_text (ncid, lat_id, 'long_name', name)
-  call wrap_put_att_text (ncid, lat_id, 'units'    , unit)
+  !name = 'lat'
+  !unit = 'degrees north'
+  !dim1_id(1) = dimlat_id
+  !call wrap_def_var (ncid,'LAT', nf_float, 1, dim1_id, lat_id)
+  !call wrap_put_att_text (ncid, lat_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, lat_id, 'units'    , unit)
 
-  name = 'longitude-2d'
-  unit = 'degrees east'
-  dim2_id(1) = dimlon_id
-  dim2_id(2) = dimlat_id
-  call wrap_def_var (ncid, 'LONGXY', nf_float, 2, dim2_id, longxy_id)
-  call wrap_put_att_text (ncid, longxy_id, 'long_name', name)
-  call wrap_put_att_text (ncid, longxy_id, 'units'    , unit)
+  !name = 'longitude-2d'
+  !unit = 'degrees east'
+  !dim2_id(1) = dimlon_id
+  !dim2_id(2) = dimlat_id
+  !call wrap_def_var (ncid, 'LONGXY', nf_float, 2, dim2_id, longxy_id)
+  !call wrap_put_att_text (ncid, longxy_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, longxy_id, 'units'    , unit)
 
-  name = 'latitude-2d'
-  unit = 'degrees north'
-  dim2_id(1) = dimlon_id
-  dim2_id(2) = dimlat_id
-  call wrap_def_var (ncid, 'LATIXY', nf_float, 2, dim2_id, latixy_id)
-  call wrap_put_att_text (ncid, latixy_id, 'long_name', name)
-  call wrap_put_att_text (ncid, latixy_id, 'units'    , unit)
+  !name = 'latitude-2d'
+  !unit = 'degrees north'
+  !dim2_id(1) = dimlon_id
+  !dim2_id(2) = dimlat_id
+  !call wrap_def_var (ncid, 'LATIXY', nf_float, 2, dim2_id, latixy_id)
+  !call wrap_put_att_text (ncid, latixy_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, latixy_id, 'units'    , unit)
 
-  name = 'northern edge of surface grid'
-  unit = 'degrees north'
-  call wrap_def_var (ncid, 'EDGEN', nf_float, 0, 0, edgen_id)
-  call wrap_put_att_text (ncid, edgen_id, 'long_name', name)
-  call wrap_put_att_text (ncid, edgen_id, 'units'    , unit)
+  !name = 'northern edge of surface grid'
+  !unit = 'degrees north'
+  !call wrap_def_var (ncid, 'EDGEN', nf_float, 0, 0, edgen_id)
+  !call wrap_put_att_text (ncid, edgen_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, edgen_id, 'units'    , unit)
 
-  name = 'eastern edge of surface grid'
-  unit = 'degrees east'
-  call wrap_def_var (ncid, 'EDGEE', nf_float, 0, 0, edgee_id)
-  call wrap_put_att_text (ncid, edgee_id, 'long_name', name)
-  call wrap_put_att_text (ncid, edgee_id, 'units'    , unit)
+  !name = 'eastern edge of surface grid'
+  !unit = 'degrees east'
+  !call wrap_def_var (ncid, 'EDGEE', nf_float, 0, 0, edgee_id)
+  !call wrap_put_att_text (ncid, edgee_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, edgee_id, 'units'    , unit)
 
-  name = 'southern edge of surface grid'
-  unit = 'degrees north'
-  call wrap_def_var (ncid, 'EDGES', nf_float, 0, 0, edges_id)
-  call wrap_put_att_text (ncid, edges_id, 'long_name', name)
-  call wrap_put_att_text (ncid, edges_id, 'units'    , unit)
+  !name = 'southern edge of surface grid'
+  !unit = 'degrees north'
+  !call wrap_def_var (ncid, 'EDGES', nf_float, 0, 0, edges_id)
+  !call wrap_put_att_text (ncid, edges_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, edges_id, 'units'    , unit)
 
-  name = 'western edge of surface grid'
-  unit = 'degrees east'
-  call wrap_def_var (ncid, 'EDGEW', nf_float, 0, 0, edgew_id)
-  call wrap_put_att_text (ncid, edgew_id, 'long_name', name)
-  call wrap_put_att_text (ncid, edgew_id, 'units'    , unit)
+  !name = 'western edge of surface grid'
+  !unit = 'degrees east'
+  !call wrap_def_var (ncid, 'EDGEW', nf_float, 0, 0, edgew_id)
+  !call wrap_put_att_text (ncid, edgew_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, edgew_id, 'units'    , unit)
 
 ! Define input file specific variables
 
-  name = 'percent glacier'
-  unit = 'unitless'
-  dim2_id(1) = dimlon_id
-  dim2_id(2) = dimlat_id
-  call wrap_def_var (ncid ,'PCT_GLACIER' ,nf_double, 2, dim2_id, pct_glacier_id)
-  call wrap_put_att_text (ncid, pct_glacier_id, 'long_name', name)
-  call wrap_put_att_text (ncid, pct_glacier_id, 'units'    , unit)
-  name = 'percent glacier/ice cap coverage'
-  unit = 'unitless'
-  dim3_id(1) = dimlon_id
-  dim3_id(2) = dimlat_id
-  dim3_id(3) = dimz_id
-  call wrap_def_var (ncid ,'PCT_GLC_GIC' ,nf_double, 3, dim3_id, pct_glc_gic_id)
-  call wrap_put_att_text (ncid, pct_glc_gic_id, 'long_name', name)
-  call wrap_put_att_text (ncid, pct_glc_gic_id, 'units'    , unit)
-  name = 'percent glacier icesheet coverage'
-  unit = 'unitless'
-  dim3_id(1) = dimlon_id
-  dim3_id(2) = dimlat_id
-  dim3_id(3) = dimz_id
-  call wrap_def_var (ncid ,'PCT_GLC_ICESHEET' ,nf_double, 3, dim3_id, pct_glc_ice_id)
-  call wrap_put_att_text (ncid, pct_glc_ice_id, 'long_name', name)
-  call wrap_put_att_text (ncid, pct_glc_ice_id, 'units'    , unit)
-  name = 'Elevation centers'
-  unit = 'm'
-  dim1_id(1) = dimz_id
-  call wrap_def_var (ncid ,'BIN_CENTERS' ,nf_float, 1, dim1_id, bin_center_id)
-  call wrap_put_att_text (ncid, bin_center_id, 'long_name', name)
-  call wrap_put_att_text (ncid, bin_center_id, 'units'    , unit)
-  name = 'Elevation edges'
-  unit = 'm'
-  dim1_id(1) = dimze_id
-  call wrap_def_var (ncid ,'BIN_EDGES' ,nf_float, 1, dim1_id, bin_edge_id)
-  call wrap_put_att_text (ncid, bin_edge_id, 'long_name', name)
-  call wrap_put_att_text (ncid, bin_edge_id, 'units'    , unit)
-
-  name = 'land mask'
-  unit = 'unitless'
+  !name = 'percent glacier'
+  !unit = 'unitless'
+  !dim2_id(1) = dimlon_id
+  !dim2_id(2) = dimlat_id
+  !call wrap_def_var (ncid ,'PCT_GLACIER' ,nf_double, 2, dim2_id, pct_glacier_id)
+  !call wrap_put_att_text (ncid, pct_glacier_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, pct_glacier_id, 'units'    , unit)
+  !name = 'percent glacier/ice cap coverage'
+  !unit = 'unitless'
+  !dim3_id(1) = dimlon_id
+  !dim3_id(2) = dimlat_id
+  !dim3_id(3) = dimz_id
+  !call wrap_def_var (ncid ,'PCT_GLC_GIC' ,nf_double, 3, dim3_id, pct_glc_gic_id)
+  !call wrap_put_att_text (ncid, pct_glc_gic_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, pct_glc_gic_id, 'units'    , unit)
+  !name = 'percent glacier icesheet coverage'
+  !unit = 'unitless'
+  !dim3_id(1) = dimlon_id
+  !dim3_id(2) = dimlat_id
+  !dim3_id(3) = dimz_id
+  !call wrap_def_var (ncid ,'PCT_GLC_ICESHEET' ,nf_double, 3, dim3_id, pct_glc_ice_id)
+  !call wrap_put_att_text (ncid, pct_glc_ice_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, pct_glc_ice_id, 'units'    , unit)
+  !name = 'Elevation centers'
+  !unit = 'm'
+  !dim1_id(1) = dimz_id
+  !call wrap_def_var (ncid ,'BIN_CENTERS' ,nf_float, 1, dim1_id, bin_center_id)
+  !call wrap_put_att_text (ncid, bin_center_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, bin_center_id, 'units'    , unit)
+  !name = 'Elevation edges'
+  !unit = 'm'
+  !dim1_id(1) = dimze_id
+  !call wrap_def_var (ncid ,'BIN_EDGES' ,nf_float, 1, dim1_id, bin_edge_id)
+  !call wrap_put_att_text (ncid, bin_edge_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, bin_edge_id, 'units'    , unit)
+!
+  !name = 'land mask'
+  !unit = 'unitless'
   ! call wrap_def_var (ncid ,'LANDMASK' ,nf_float, 2, dim2_id, lgmlandmask_id)
   ! call wrap_put_att_text (ncid, lgmlandmask_id, 'long_name', name)
   ! call wrap_put_att_text (ncid, lgmlandmask_id, 'units'    , unit)
-  call wrap_def_var (ncid ,'LANDMASK' ,nf_float, 2, dim2_id, landmask_id)
-  call wrap_put_att_text (ncid, landmask_id, 'long_name', name)
-  call wrap_put_att_text (ncid, landmask_id, 'units'    , unit)
+  !call wrap_def_var (ncid ,'LANDMASK' ,nf_float, 2, dim2_id, landmask_id)
+  !call wrap_put_att_text (ncid, landmask_id, 'long_name', name)
+  !call wrap_put_att_text (ncid, landmask_id, 'units'    , unit)
 
 ! End of definition
 
-  status = nf_enddef(ncid)
+  !status = nf_enddef(ncid)
 
 ! Create output file
 
-  call wrap_put_var_realx (ncid, lon_id        , lon)
-  call wrap_put_var_realx (ncid, lat_id        , lat)
-  call wrap_put_var_realx (ncid, longxy_id     , longxy)
-  call wrap_put_var_realx (ncid, latixy_id     , latixy)
-  call wrap_put_var_realx (ncid, edgen_id      , edge(1))
-  call wrap_put_var_realx (ncid, edgee_id      , edge(2))
-  call wrap_put_var_realx (ncid, edges_id      , edge(3))
-  call wrap_put_var_realx (ncid, edgew_id      , edge(4))
-  call wrap_put_var_realx (ncid, pct_glacier_id, pct_glacier)
-  call wrap_put_var_realx (ncid, pct_glc_gic_id, pct_glc_gic)
-  call wrap_put_var_realx (ncid, pct_glc_ice_id, pct_glc_ice)
-  call wrap_put_var_realx (ncid, bin_center_id, bin_center)
-  call wrap_put_var_realx (ncid, bin_edge_id   , bin_edge)
-  call wrap_put_var_realx (ncid, landmask_id   , landmask)
+  !call wrap_put_var_realx (ncid, lon_id        , lon)
+  !call wrap_put_var_realx (ncid, lat_id        , lat)
+  !call wrap_put_var_realx (ncid, longxy_id     , longxy)
+  !call wrap_put_var_realx (ncid, latixy_id     , latixy)
+  !call wrap_put_var_realx (ncid, edgen_id      , edge(1))
+  !call wrap_put_var_realx (ncid, edgee_id      , edge(2))
+  !call wrap_put_var_realx (ncid, edges_id      , edge(3))
+  !call wrap_put_var_realx (ncid, edgew_id      , edge(4))
+  !call wrap_put_var_realx (ncid, pct_glacier_id, pct_glacier)
+  !call wrap_put_var_realx (ncid, pct_glc_gic_id, pct_glc_gic)
+  !call wrap_put_var_realx (ncid, pct_glc_ice_id, pct_glc_ice)
+  !call wrap_put_var_realx (ncid, bin_center_id, bin_center)
+  !call wrap_put_var_realx (ncid, bin_edge_id   , bin_edge)
+  !call wrap_put_var_realx (ncid, landmask_id   , landmask)
   ! call wrap_put_var_realx (ncid, lgmlandmask_id   , lgmlandmask)
 
-  call wrap_close(ncid)
+  !call wrap_close(ncid)
 
 ! -----------------------------------------------------------------
 ! create netcdf file 2 pft
@@ -664,7 +665,7 @@ program convert_mksrf
   call wrap_put_var_realx (ncid2, pct_nat_veg_id, pct_nat_veg)
   call wrap_put_var_realx (ncid2, pct_cft_id    , pct_cft)
   call wrap_put_var_realx (ncid2, pct_pft_id    , pct_nat_pft)
-  call wrap_put_var_realx (ncid2, landmask_id   , landmask)
+  call wrap_put_var_realx (ncid2, landmask_id   , lmask)
 
   call wrap_close(ncid2)
 
@@ -790,7 +791,7 @@ program convert_mksrf
   call wrap_put_var_realx (ncid, pct_lake_id, pct_lake)
   call wrap_put_var_realx (ncid, lak_dep_id, lakedepth)
   call wrap_put_var_realx (ncid, pct_wetland_id, pct_wetland)
-  call wrap_put_var_realx (ncid, landmask_id   , landmask)
+  call wrap_put_var_realx (ncid, landmask_id   , lmask)
 
   call wrap_close(ncid)
 
