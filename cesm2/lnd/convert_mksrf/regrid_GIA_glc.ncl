@@ -17,10 +17,10 @@ begin
       system( "/bin/rm "+outglcfilename );
    end if
    nco = addfile( outglcfilename, "c" )
-   ingiafilename = "/gpfs/u/home/sbradley/ERIK/Masks_USGS-huy3-S1D_21_10min.nc"
+   ingiafilename = "/gpfs/fs1/work/sbradley/CESM2.0_SETUP/GIA_CAM-CISM/CAM-CLM/Masks_USGS-huy3-S1D_21_10min_2019.nc"
    print( "Open: "+ingiafilename );
    ncgia = addfile( ingiafilename, "r" )
-   ingiaofilename = "/gpfs/u/home/sbradley/ERIK/Orog_USGS-huy3-S1D_21_10min.nc"
+   ingiaofilename = "/gpfs/fs1/work/sbradley/CESM2.0_SETUP/GIA_CAM-CISM/CAM-CLM/Orog_USGS-huy3-S1D_21_10min_2019.nc"
    print( "Open: "+ingiaofilename );
    ncgiao = addfile( ingiaofilename, "r" )
    ;
@@ -36,7 +36,7 @@ begin
    ; Get the elevations of the 4km data
    ;
    elev = (/ ncgiao->RELIEF(:,:) /)
-   pct_gec = new( (/ n_z, nlatgia, nlongia /), "float" );
+   pct_gec = new( (/ n_z, nlatgia, nlongia /), "double" );
    top_gec = pct_gec
    pct_gec = 0.0
    top_gec = 0.0
@@ -49,7 +49,7 @@ begin
          do k = 0, n_z
             if ( (elev(i,j) .ge. z_edge(k)) .and. (elev(i,j) .lt. z_edge(k+1)) )then
                nfill = nfill + 1
-               pct_gec(k,i,j) = doubletofloat( ncgia->sftgif(i,j)*100.0 ) ; Ice fraction
+               pct_gec(k,i,j) = ncgia->sftgif(i,j)*100.0d00 ; Ice fraction
                top_gec(k,i,j) = doubletofloat( elev(i,j) )                ; Elevation
                break
             end if
@@ -92,7 +92,7 @@ begin
       end if
    end do
    pct_glc  = (/ HFpct_gec(0,:,:) /)
-   landmask = (/ HFpct_gec(0,:,:) /)
+   landmask = (/ doubletofloat(HFpct_gec(0,:,:)) /)
    do i = 0, nlat-1
    do j = 0, nlon-1
       pct_glc(i,j) = (/ sum(HFpct_gec(:,i,j)) /)

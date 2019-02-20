@@ -19,9 +19,9 @@ begin
   path   = "./"
   input  = "$DIN_LOC_ROOT"
 
-  finglc = "mksrf_glacier_lgm21ka.wGIA.c190216.nc"
-  finlan = "mksrf_lanwatnDepth_lgm21ka.c190216.nc"
-  finpft = "mksrf_pft_lgm21ka.c190216.nc"
+  finglc = "mksrf_glacier_lgm21ka.wGIA.c190220.nc"
+  finlan = "mksrf_lanwatnDepth_lgm21ka.c190220.nc"
+  finpft = "mksrf_pft_lgm21ka.c190220.nc"
 
   ifile1 = path+finglc+".nc"
   ifile2 = path+finlan+".nc"
@@ -185,7 +185,7 @@ if (doThis .eq. 1) then
         	soic2d(i,j)  	 = 15.
 		fmax(i,j)    	 = 0.365241	; constant over glaciers
                 pctwet(i,j)      = 0.d00
-                pctlak(i,j)      = 0.
+                pctlak(i,j)      = 0.d00
                 organic3d(:,i,j) = 0.
                 npctpft(0,i,j)    = 100.d00		; bareground under new glaciers
                 npctpft(1:numpft-1,i,j) = 0.d00
@@ -230,7 +230,7 @@ end if		; doThis loop
                 print( "Fill: i="+i+" j="+j );
                 soic2d(i,j)      = 15.
                 pctwet(i,j)      = 0.d00
-                pctlak(i,j)      = 0.
+                pctlak(i,j)      = 0.d00
                 organic3d(:,i,j) = 0.
                 npctpft(0,i,j)    = 100.d00
                 npctpft(1:numpft-1,i,j) = 0.d00
@@ -282,7 +282,7 @@ end if		; doThis loop
 		print("Cell will remain bareground, i,j " + i + " " + j)
                 soic2d(i,j)      = 15.
                 pctwet(i,j)      = 0.d00
-                pctlak(i,j)      = 0.
+                pctlak(i,j)      = 0.d00
                 organic3d(:,i,j) = 0.
                 hbot(:,:,i,j)    = 0.d00
                 htop(:,:,i,j)    = 0.d00
@@ -344,7 +344,7 @@ end if		; doThis loop
 			print("sumpft = "+sumpft + " for cell " + i + " " +j)
 			; zero cell is set to bareground
 			if (sumpft .eq. 0.0d00) then
-				pctlak(i,j) = 0.
+				pctlak(i,j) = 0.d00
 				pctwet(i,j) = 0.d00
 				pctgla(i,j) = 0.d00
 				npctpft(0,i,j) = 100.d00

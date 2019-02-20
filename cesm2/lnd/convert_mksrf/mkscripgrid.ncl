@@ -14,7 +14,7 @@ begin
   ;
   name = "glacier"
   nmask = "lgm21ka.wGIA"
-  idate = "190215"
+  idate = "190220"
   res = "0.5x0.5"
   infilename = "mksrf_"+name+"_"+nmask+".c"+idate+".nc"
   outfilename = "SCRIPgrid_"+res+"_"+nmask+"_c"+cdate+".nc";
@@ -22,6 +22,7 @@ begin
   system( "/bin/rm -f "+outfilename );
   print( "output file: "+outfilename );
 
+  print( "Open: "+infilename )
   nc = addfile( infilename, "r" )
   lmask = nc->LANDMASK
   Mask2D = new( dimsizes(lmask), "integer", "No_FillValue" )
