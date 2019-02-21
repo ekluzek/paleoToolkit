@@ -22,11 +22,12 @@ begin
 ; read files
 ; ==============================================
 
- ifile1     = "./data/lanwat_dataset_presentday.nc"
- ifile2     = "./data/icemask_LGM_10min.nc"
- ifile3      = "./data/icedammedlakes_LGM_10min.nc"
- ofile1     = "./results/lanwat_dataset_LGM.nc"
- ofile2     = "./results/lanwat_dataset_LGM_flip.nc"
+ basedir    = "/gpfs/fs1/work/sbradley/CESM2.0_SETUP/CLM/LAKE_DATA"
+ ifile1     = basedir+"/data/lanwat_dataset_presentday.nc"
+ ifile2     = basedir+"/data/icemask_LGM_10min.nc"
+ ifile3      = basedir+"/data/icedammedlakes_LGM_10min.nc"
+ ofile1     = "./lanwat_dataset_LGM.nc"
+ ofile2     = "./lanwat_dataset_LGM_flip.nc"
 
 ;---Read present-day lake and wetland dataset
  in1 = addfile(ifile1,"r")
@@ -66,8 +67,8 @@ begin
     Opt@WgtFileName    = "./remap_weights.nc" 
 ;---Regrid lakes and ice sheet masks
     lgm_ice1d          = ESMF_regrid(lgm_ice,Opt)
-    lgm_lakes1d        = ESMF_regrid_with_weights(lgm_lakes,"./remap_weights.nc",Opt)
-    lgm_mask1d         = ESMF_regrid_with_weights(lgm_mask,"./remap_weights.nc",Opt) 
+    lgm_lakes1d        = ESMF_regrid_with_weights(lgm_lakes,basedir+"/remap_weights.nc",Opt)
+    lgm_mask1d         = ESMF_regrid_with_weights(lgm_mask,basedir+"/remap_weights.nc",Opt) 
  
 ; ==============================================
 ;   Some loops/if-then cycles to update dataset
