@@ -128,12 +128,33 @@ begin
  fileAtt@author = systemfunc("echo $USER")
  fileAtt@input1 = ifile1
  fileattdef(fout1,fileAtt)
+ ;
+ ; Define Dimensions
+ ;
+ dsizes = getfiledimsizes( in1 );
+ ndims  = dimsizes(dsizes);
+ ; Get dimension names
+ dimnames = getfiledims( in1 );
+ ;
+ is_unlim = new( (/ ndims /), "logical" );
+ is_unlim = False;
+ do i = 0, ndims-1
+    if ( dimnames(i) .eq. "ncl_scalar" )then
+       dimnames(i) = "scalar";
+    end if
+ end do
+ filedimdef( fout1, dimnames, dsizes, is_unlim );
 
- fout1->LANDMASK        = lgm_mask1d
- fout1->PCT_LAKE        = (/pct_lake/)
- fout1->PCT_WETLAND     = (/pct_wetland/)
- fout1->LONGXY          = (/lono/)
- fout1->LATIXY          = (/lato/)
+ vars = (/ "LANDMASK", "PCT_LAKE", "PCT_WETLAND", "LONGXY", "LATIXY" /)
+ do i = 0, dimsizes(vars)-1
+    filevardef ( fout1, (/ vars(i) /), (/ "float" /),  (/ "lat", "lon" /) );
+ end do
+
+ fout1->LANDMASK        = doubletofloat(lgm_mask1d)
+ fout1->PCT_LAKE        = pct_lake
+ fout1->PCT_WETLAND     = pct_wetland
+ fout1->LONGXY          = lono
+ fout1->LATIXY          = lato
 
 ;---ncks -A the other variables
 
