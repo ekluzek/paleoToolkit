@@ -43,3 +43,8 @@ cesm?/lnd/paleo_mkraw_cesm?/*.nc
 
 # Unzipped files under the topo directory
 cesm?/lnd/convert_mksrf/topo/*.nc
+
+
+# batch output
+regridding.out.*
+regridding.err.*
