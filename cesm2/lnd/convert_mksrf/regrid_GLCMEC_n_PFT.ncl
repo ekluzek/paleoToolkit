@@ -97,7 +97,7 @@ begin
    ;
    print( "set global attributes" );
    fileattdef( ncout, ncin );
-   date = systemfunc( "date" );
+   date = systemfunc( "date -u" );
    desc = "Regrid using regrid_GLCMEC_n_PFT.ncl from: "+infilename;
    history = ""
    if ( isvar(ncin@history) )then
@@ -175,7 +175,7 @@ begin
    ;
    ; Open output files for half degree versions
    ;
-   sdate    = systemfunc( "date +%y%m%d" );
+   sdate    = systemfunc( "date -u +%y%m%d" );
 
    outglacierfile = "mksrf_glacier_0.5x0.5_simyr2000.c"+sdate+".nc";
    outpftfile     = "mksrf_landuse_0.5x0.5_potvegclm50_LUH2.c"+sdate+".nc";

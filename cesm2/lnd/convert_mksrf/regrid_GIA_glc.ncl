@@ -7,8 +7,8 @@ begin
    ;
    ; Open the different files
    ;
-   sdate    = systemfunc( "date +%y%m%d" );
-   inglcfilename = "mksrf_glacier_lgm21ka.example.nc";
+   sdate    = systemfunc( "date -u +%y%m%d" );
+   inglcfilename = "mksrf_glacier_0.5x0.5_simyr2000.c190225.nc"
    print( "Open: "+inglcfilename );
    nc = addfile( inglcfilename, "r" )
    outglcfilename = "mksrf_glacier_lgm21ka.wGIA.c"+sdate+".nc";
@@ -23,6 +23,10 @@ begin
    ingiaofilename = "/gpfs/fs1/work/sbradley/CESM2.0_SETUP/GIA_CAM-CISM/CAM-CLM/Orog_USGS-huy3-S1D_21_10min_2019.nc"
    print( "Open: "+ingiaofilename );
    ncgiao = addfile( ingiaofilename, "r" )
+   basedir    = "/gpfs/fs1/work/sbradley/CESM2.0_SETUP/CLM/LAKE_DATA"
+   icedamlake  = basedir+"/data/icedammedlakes_LGM_10min.nc"
+   print( "Open: "+icedamlake );
+   ncicedam = addfile(icedamlake, "r" );
    ;
    ; Get the elevation bins from the glacier dataset
    ;
@@ -74,7 +78,12 @@ begin
    ; Regrid from the 4km to half degree
    ;
    print( "regrid" );
+   print( "pct_gec" );
+   printVarSummary( pct_gec );
+   printVarSummary( nc->LON );
+   printVarSummary( nc->LAT );
    HFpct_gec = area_conserve_remap ( ncgia->lon, ncgia->lat, pct_gec, nc->LON, nc->LAT, False );
+   print( "top_gec"  );
    HFtop_gec = area_conserve_remap ( ncgia->lon, ncgia->lat, top_gec, nc->LON, nc->LAT, False );
    do k = 0, n_z-1
       print( "k       :"+k+" z="+nc->BIN_CENTERS(k) )
@@ -92,11 +101,14 @@ begin
       end if
    end do
    pct_glc  = (/ HFpct_gec(0,:,:) /)
-   landmask = (/ doubletofloat(HFpct_gec(0,:,:)) /)
+   landmask = area_conserve_remap ( ncgia->lon, ncgia->lat, doubletofloat( ncgia->sftlf ), nc->LON, nc->LAT, False );
    do i = 0, nlat-1
    do j = 0, nlon-1
       pct_glc(i,j) = (/ sum(HFpct_gec(:,i,j)) /)
       if ( pct_glc(i,j) .gt. 0.0d00 )then
+         landmask(i,j) = 1.0
+      end if
+      if ( ncicedam->sftlf(i,j) .gt. 0.0d00 )then
          landmask(i,j) = 1.0
       end if
    end do
@@ -128,7 +140,7 @@ begin
    print( "Define vars" );
    vars = getfilevarnames( nc );
    do i = 0, dimsizes(vars)-1
-      print( "var: "+vars(i) );
+      print( "var: "+vars(i)+": "+typeof(nc->$vars(i)$) );
       vardims = getfilevardims( nc, vars(i) );
       do j = 0, dimsizes(vardims)-1
          if ( vardims(j) .eq. "ncl_scalar" )then
@@ -144,7 +156,7 @@ begin
    ;
    print( "set global attributes" );
    fileattdef( nco, nc );
-   date = systemfunc( "date" );
+   date = systemfunc( "date -u" );
    desc = "Regrid using regrid_GIA_glc.ncl from: "+ingiafilename;
    history = ""
    if ( isvar(nc@history) )then
@@ -159,13 +171,13 @@ begin
    do i = 0, dimsizes(vars)-1
       print( "var: "+vars(i) );
       if ( vars(i) .eq. "PCT_GLACIER" )then
-         nco->$vars(i)$ = (/ pct_glc /)
+         nco->$vars(i)$ = doubletofloat(pct_glc)
       else
         if ( vars(i) .eq. "PCT_GLC_GIC" )then
-           nco->$vars(i)$ = 0.0d00
+           nco->$vars(i)$ = 0.0
         else
            if ( vars(i) .eq. "PCT_GLC_ICESHEET" )then
-              nco->$vars(i)$ = (/ HFpct_gec /)
+              nco->$vars(i)$ = doubletofloat( HFpct_gec )
            else
               if ( vars(i) .eq. "BIN_CENTERS" )then
                  nco->$vars(i)$ = (/ bin_centers /)

@@ -12,6 +12,9 @@
 #SBATCH -o %x.out.%J
 #
 setenv DIN_LOC_ROOT /gpfs/fs1/p/cesmdata/cseg/inputdata
+set echo
 module load ncl
-#ncl regrid_GLCMEC_n_PFT.ncl
+module load nco
+ncl regrid_GLCMEC_n_PFT.ncl
 ncl regrid_GIA_glc.ncl
+ncl lake_dataset_21ka.ncl
