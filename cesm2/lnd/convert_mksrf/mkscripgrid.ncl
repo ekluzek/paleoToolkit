@@ -8,13 +8,13 @@
 begin
   ; ===========================================================================================================
   ; Set a few constants needed later
-  cdate  = systemfunc( "date +%y%m%d" );
-  ldate  = systemfunc( "date" );
+  cdate  = systemfunc( "date -u +%y%m%d" );
+  ldate  = systemfunc( "date -u" );
   printn = True;
   ;
   name = "glacier"
   nmask = "lgm21ka.wGIA"
-  idate = "190220"
+  idate = "190225"
   res = "0.5x0.5"
   infilename = "mksrf_"+name+"_"+nmask+".c"+idate+".nc"
   outfilename = "SCRIPgrid_"+res+"_"+nmask+"_c"+cdate+".nc";

@@ -135,10 +135,6 @@ program convert_mksrf
     call wrap_inq_varid (ncid_pelt, 'PCT_GLACIER', ice_p1_id   )
     call wrap_get_var8 (ncid_pelt, ice_p1_id, Icemask)
 
-! get id and var for landmask (0-100)
-    call wrap_inq_varid (ncid_pelt, 'LANDMASK', landmask_id   )
-    call wrap_get_var8 (ncid_pelt, landmask_id, lmask)
-
   else
     write(6,*)'cannot open GIA file1 successfully'
     call endrun 
@@ -208,6 +204,10 @@ program convert_mksrf
 ! get id and var for lanwat
     call wrap_inq_varid (ncid, 'LAKEDEPTH', lak_dep_id   )
     call wrap_get_var8 (ncid, lak_dep_id, lakedepth)
+
+! get id and var for landmask (0-100)
+    call wrap_inq_varid (ncid, 'LANDMASK', landmask_id   )
+    call wrap_get_var8 (ncid, landmask_id, lmask)
 
   else
     write(6,*)'cannot open lake file successfully'
