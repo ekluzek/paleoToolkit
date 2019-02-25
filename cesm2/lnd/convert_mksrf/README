@@ -1,10 +1,9 @@
 Process to follow:
 
-1.) Unzip the glacier topo file you will need (or get your own data)
+1.) Get the data for land and ice mask as well as topography
 
-For example:
-
- gunzip ../../../cesm1/lnd/convert_mksrf/topo/topo-ice.05.lgm21ka.example.nc.gz
+/gpfs/fs1/work/sbradley/CESM2.0_SETUP/GIA_CAM-CISM/CAM-CLM/Masks_USGS-huy3-S1D_21_10min_2019.nc
+/gpfs/fs1/work/sbradley/CESM2.0_SETUP/GIA_CAM-CISM/CAM-CLM/Orog_USGS-huy3-S1D_21_10min_2019.nc
 
 2.) Set environment variable DIN_LOC_ROOT to location of CESM2 inputdata
 
@@ -12,32 +11,37 @@ setenv DIN_LOC_ROOT /glade/p/cesm/cseg/inputdata
 
 This path will be used in the NCL scripts
 
-2.) Regrid glacier and PFT data to a half degree grid
-
-IMPORTANT NOTE: HAS TO BE DONE ON A LARGE MEMORY MACHINE!
-
-This step also takes several hours of compute time.
+3.) Regrid glacier, lake and PFT data to a half degree grid
 
  sbatch runregrid.csh
 
 or
 
  ncl regrid_GLCMEC_n_PFT.ncl
+ ncl regrid_GIA_glc.ncl
+ ncl lake_dataset_21ka.ncl
 
-3.) Run convert_mksrf to convert Glacier, Land-water, and PFT datasets
+4.) Run convert_mksrf to convert Glacier, Land-water, and PFT datasets
 
   See README.convert_mksrf
 
-4.) Edit nn_fill.ncl to point to your files
+5.) Create SCRIP grid file of the new map
 
-5.) Run nn_fill.ncl to create new datasets needed by CESM2/components/lnd/tools/mksurfdata_map
+ncl mkscripgrid.ncl
 
+6.) Create mapping file needed for mksurfdata_map
+
+mkmapdata.sh -r 0.9x1.25
+
+7.) Edit nn_fill.ncl to point to your files
+
+8.) Run nn_fill.ncl to create new datasets needed by CESM2/components/lnd/tools/mksurfdata_map
 
  ncl nn_fill.ncl
 
-6.) Run mksurfdata_map with the datasets you created and the mapping files that go with them
+9.) Run mksurfdata_map with the datasets you created and the mapping files that go with them
 
 
-use the example namelist: (example namelist works with CTSM release-clm5.0.16)
+use the example namelist: (example namelist works with CTSM release-clm5.0.18)
 
 surfdata_0.9x1.25_hist_16pfts_nourb_CMIP6_simyr21ka_example.namelist
