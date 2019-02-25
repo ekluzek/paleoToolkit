@@ -13,7 +13,7 @@ begin
   printn = True;
   ;
   name = "glacier"
-  nmask = "lgm21ka.wGIA"
+  nmask = "lgm21ka.wGIA.wLGMicedam"
   idate = "190225"
   res = "0.5x0.5"
   infilename = "mksrf_"+name+"_"+nmask+".c"+idate+".nc"
