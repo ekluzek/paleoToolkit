@@ -11,7 +11,7 @@ begin
    inglcfilename = "mksrf_glacier_0.5x0.5_simyr2000.c190225.nc"
    print( "Open: "+inglcfilename );
    nc = addfile( inglcfilename, "r" )
-   outglcfilename = "mksrf_glacier_lgm21ka.wGIA.c"+sdate+".nc";
+   outglcfilename = "mksrf_glacier_lgm21ka.wGIA.wLGMicedam.c"+sdate+".nc";
    print( "Open: "+outglcfilename );
    if ( systemfunc("test -f "+outglcfilename+"; echo $?" ) .eq. 0 )then
       system( "/bin/rm "+outglcfilename );
@@ -24,7 +24,7 @@ begin
    print( "Open: "+ingiaofilename );
    ncgiao = addfile( ingiaofilename, "r" )
    basedir    = "/gpfs/fs1/work/sbradley/CESM2.0_SETUP/CLM/LAKE_DATA"
-   icedamlake  = basedir+"/data/icedammedlakes_LGM_10min.nc"
+   icedamlake  = basedir+"/icedammedlakes_LGM_10min_190427.nc"
    print( "Open: "+icedamlake );
    ncicedam = addfile(icedamlake, "r" );
    ;

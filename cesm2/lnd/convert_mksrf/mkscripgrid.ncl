@@ -14,7 +14,7 @@ begin
   ;
   name = "glacier"
   nmask = "lgm21ka.wGIA.wLGMicedam"
-  idate = "190225"
+  idate = "190501"
   res = "0.5x0.5"
   infilename = "mksrf_"+name+"_"+nmask+".c"+idate+".nc"
   outfilename = "SCRIPgrid_"+res+"_"+nmask+"_c"+cdate+".nc";

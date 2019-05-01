@@ -25,7 +25,7 @@ begin
  basedir    = "/gpfs/fs1/work/sbradley/CESM2.0_SETUP/CLM/LAKE_DATA"
  ifile1     = "mksrf_LakePnDepth_0.5x0.5_simyr2004_csp1k.c190225.nc"
  ifile2     = basedir+"/data/icemask_LGM_10min.nc"
- ifile3      = basedir+"/data/icedammedlakes_LGM_10min.nc"
+ ifile3      = basedir+"/icedammedlakes_LGM_10min_190427.nc"
  ofile1     = "mksrf_LakePnDepth_0.5x0.5_simyr2004_csp1k_wLGMicedam_c"+dd+".nc"
 
 ;---Read present-day lake and wetland dataset
@@ -43,7 +43,7 @@ begin
  lgm_ice     = in2->sftgif   
  lgm_mask    = in2->sftlf
 
-;---The two ice-dammed lakes to be added -> 1, 0 elsewhere 
+;---The ice-dammed lakes to be added -> 1, 0 elsewhere 
  in3 = addfile(ifile3,"r")
  lgm_lakes   = in3->sftlf   
 
@@ -83,7 +83,7 @@ begin
        end do
     end do
 
-;---Add the two ice-dammed lakes
+;---Add the  ice-dammed lakes
 
     do j=0,nlato-1
        do i=0,nlono-1

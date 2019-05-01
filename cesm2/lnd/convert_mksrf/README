@@ -25,11 +25,21 @@ or
 
   See README.convert_mksrf
 
-5.) Create SCRIP grid file of the new map
+5.) Create SCRIP grid file of the new map (0.5x0.5_LGM)
 
 ncl mkscripgrid.ncl
 
-6.) Create mapping file needed for mksurfdata_map
+6.) Create mapping files needed for mksurfdata_map (from ctsm/tools/mkmapdata)
+Using ctsm version release-clm5.0.18
+Needed for step 9 for mksurfdata_map
+
+0.5x0.5_LGM and 0.9x1.25_nomask
+
+Add SCRIP grid file to namelist_defaults_clm5_5_tools.xml
+
++<scripgriddata hgrid="0.5x0.5"   lmask="LGM"    
++   >$PATH_TO_PARENT/paleoToolkit/cesm2/lnd/convert_mksrf/SCRIPgrid_0.5x0.5_lgm21ka.wGIA.wLGMicedam_cYYMMDD.nc
++</scripgriddata>
 
 mkmapdata.sh -r 0.9x1.25
 
@@ -41,6 +51,8 @@ mkmapdata.sh -r 0.9x1.25
 
 9.) Run mksurfdata_map with the datasets you created and the mapping files that go with them
 
+(from ctsm/tools/mksurfdata_map)
+Using ctsm version release-clm5.0.18
 
 use the example namelist: (example namelist works with CTSM release-clm5.0.18)
 

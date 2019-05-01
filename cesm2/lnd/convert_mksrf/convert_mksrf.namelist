@@ -6,9 +6,9 @@
   fileig = 'mksrf_glacier_lgm21ka.wGIA.c190225.nc'
   fileip = 'mksrf_landuse_0.5x0.5_potvegclm50_LUH2.c190225.nc'
   fileiw = '/gpfs/fs1/p/cesmdata/cseg/inputdata/lnd/clm2/rawdata/mksrf_lanwat.050425.nc'
-  fileil = 'mksrf_LakePnDepth_0.5x0.5_simyr2004_csp1k_wLGMicedam_c190225.nc'
-  fileog = 'mksrf_glacier_lgm21ka.wGIA.wLGMicedam.c190225.nc'
-  fileop = 'mksrf_pft_lgm21ka.wLGMicedam.c190225.nc'
-  fileol = 'mksrf_lanwatnDepth_lgm21ka.wLGMicedam.c190225.nc'
+  fileil = 'mksrf_LakePnDepth_0.5x0.5_simyr2004_csp1k_wLGMicedam_c190501.nc'
+  fileog = 'mksrf_glacier_lgm21ka.wGIA.wLGMicedam.c190501.nc'
+  fileop = 'mksrf_pft_lgm21ka.wLGMicedam.c190501.nc'
+  fileol = 'mksrf_lanwatnDepth_lgm21ka.wLGMicedam.c190501.nc'
   !-----------------------------------------------------------------
 /
