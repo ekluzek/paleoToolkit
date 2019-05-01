@@ -24,7 +24,7 @@ begin
 
  basedir    = "/gpfs/fs1/work/sbradley/CESM2.0_SETUP/CLM/LAKE_DATA"
  ifile1     = "mksrf_LakePnDepth_0.5x0.5_simyr2004_csp1k.c190225.nc"
- ifile2     = basedir+"/data/icemask_LGM_10min.nc"
+ ifile2     = basedir+"/../with_lakes/icemask_LGM_10min_190427.nc
  ifile3      = basedir+"/icedammedlakes_LGM_10min_190427.nc"
  ofile1     = "mksrf_LakePnDepth_0.5x0.5_simyr2004_csp1k_wLGMicedam_c"+dd+".nc"
 
