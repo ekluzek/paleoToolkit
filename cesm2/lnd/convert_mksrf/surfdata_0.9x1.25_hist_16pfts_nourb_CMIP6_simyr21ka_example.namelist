@@ -27,7 +27,7 @@
  mksrf_fwetlnd    = '/gpfs/fs1/work/erik/paleoToolkit/cesm2/lnd/convert_mksrf/mksrf_lanwatnDepth_lgm21ka.wLGMicedam.c190501.nc'
  mksrf_fmax       = '/gpfs/fs1/work/erik/paleoToolkit/cesm2//lnd/convert_mksrf/mksrf_fmax_21ka.190501.nn.nc'
  mksrf_fglacier   = '/gpfs/fs1/work/erik/paleoToolkit/cesm2/lnd/convert_mksrf/mksrf_glacier_lgm21ka.wGIA.wLGMicedam.c190501.nc'
- mksrf_fglacierregion = '/gpfs/fs1/work/erik/paleoToolkit/cesm2/lnd/convert_mksrf/GLACIER_REGION_nh_wgrid_c190124.nc'
+ mksrf_fglacierregion = '/gpfs/fs1/work/erik/paleoToolkit/cesm2/lnd/convert_mksrf/mksrf_GlacierRegion_0.9x1.25_nh_21ka_nomask_c190725.nc'
  mksrf_fvocef     = '/gpfs/fs1/work/erik/paleoToolkit/cesm2/lnd/convert_mksrf/mksrf_vocef_0.5x0.5_simyr2000_21ka.190501.nn.nc'
  mksrf_furbtopo   = '/glade/p/cesm/cseg/inputdata/lnd/clm2/rawdata/mksrf_topo.10min.c080912.nc'
  mksrf_fgdp       = '/glade/p/cesm/cseg/inputdata/lnd/clm2/rawdata/mksrf_gdp_0.5x0.5_AVHRR_simyr2000.c130228.nc'
