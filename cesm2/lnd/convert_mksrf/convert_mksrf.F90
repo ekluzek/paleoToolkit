@@ -57,8 +57,6 @@ program convert_mksrf
   real(r8) :: lakedepth(nlon,nlat)        !lake depth
   real(r8) :: pct_wetland(nlon,nlat)      !pct wetland
   real(r8) :: bin_center(num_z)           !glacier elevation centers
-  real(r8) :: center_sum(num_z)           !glacier elevation weighted sum
-  real(r8) :: elev_weight(num_z)          !sum of elevation weighted by ice fraction
   real(r8) :: bin_edge(num_z_edge)        !glacier elevation edges
 
 
@@ -157,12 +155,6 @@ program convert_mksrf
     call wrap_get_var8 (ncid, bin_center_id,  bin_center)
     call wrap_inq_varid (ncid, 'BIN_EDGES',   bin_edge_id   )
     call wrap_get_var8 (ncid, bin_edge_id,    bin_edge)
-    ! Use the settings for ice from the input ice file, so reset these
-    pct_glacier = 0.0_r8
-    pct_glc_ice = 0.0_r8
-    pct_glc_gic = 0.0_r8
-    center_sum  = 0.0_r8
-    elev_weight = 0.0_r8
 
   else
     write(6,*)'cannot open glacier file successfully'
@@ -263,6 +255,16 @@ program convert_mksrf
    do i = 1,nlon
     if (Icemask(i,j)==100.0_r8) then
               pct_glacier(i,j) = Icemask(i,j)
+              ! Leave MEC icesheet alone, but make sure it sums to 100
+              if ( abs(sum(pct_glc_ice(i,j,:)) - pct_glacier(i,j)) > epsilon(100.0)*100. )then
+                 write(6,*)'pct_glc_ice does NOT sum to pct_glacier amount as expected'
+                 write(6,*) 'pct_glacier = ', pct_glacier(i,j)
+                 write(6,*) 'sum(pct_glc_ice) = ', sum(pct_glc_ice(i,j,:))
+                 write(6,*) 'diff             = ', pct_glacier(i,j) - sum(pct_glc_ice(i,j,:))
+                 write(6,*) 'pct_glc_ice = ', pct_glc_ice(i,j,:)
+                 call endrun
+              end if
+              ! Set other types to zero
               pct_crop(i,j)      = 0._r8
               pct_nat_veg(i,j)   = 0._r8
               pct_nat_pft(i,j,0)  = 0._r8
