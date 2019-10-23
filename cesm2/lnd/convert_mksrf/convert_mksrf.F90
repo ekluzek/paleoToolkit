@@ -102,6 +102,7 @@ program convert_mksrf
   integer :: ncid_pelt                    !netCDF file id
   integer ice_p1_id                       ! input topo file vars
   integer ret                         ! return id
+  integer :: dim0_id(0)                   !netCDF dimension id for scalar variables
   integer :: dim1_id(1)                   !netCDF dimension id for 1-d variables
   integer :: dim2_id(2)                   !netCDF dimension id for 2-d variables
   integer :: dim3_id(3)                   !netCDF dimension id for 3-d variables
@@ -367,25 +368,25 @@ program convert_mksrf
 
   name = 'northern edge of surface grid'
   unit = 'degrees north'
-  call wrap_def_var (ncid, 'EDGEN', nf_float, 0, 0, edgen_id)
+  call wrap_def_var (ncid, 'EDGEN', nf_float, 0, dim0_id, edgen_id)
   call wrap_put_att_text (ncid, edgen_id, 'long_name', name)
   call wrap_put_att_text (ncid, edgen_id, 'units'    , unit)
 
   name = 'eastern edge of surface grid'
   unit = 'degrees east'
-  call wrap_def_var (ncid, 'EDGEE', nf_float, 0, 0, edgee_id)
+  call wrap_def_var (ncid, 'EDGEE', nf_float, 0, dim0_id, edgee_id)
   call wrap_put_att_text (ncid, edgee_id, 'long_name', name)
   call wrap_put_att_text (ncid, edgee_id, 'units'    , unit)
 
   name = 'southern edge of surface grid'
   unit = 'degrees north'
-  call wrap_def_var (ncid, 'EDGES', nf_float, 0, 0, edges_id)
+  call wrap_def_var (ncid, 'EDGES', nf_float, 0, dim0_id, edges_id)
   call wrap_put_att_text (ncid, edges_id, 'long_name', name)
   call wrap_put_att_text (ncid, edges_id, 'units'    , unit)
 
   name = 'western edge of surface grid'
   unit = 'degrees east'
-  call wrap_def_var (ncid, 'EDGEW', nf_float, 0, 0, edgew_id)
+  call wrap_def_var (ncid, 'EDGEW', nf_float, 0, dim0_id, edgew_id)
   call wrap_put_att_text (ncid, edgew_id, 'long_name', name)
   call wrap_put_att_text (ncid, edgew_id, 'units'    , unit)
 
@@ -458,7 +459,7 @@ program convert_mksrf
   call wrap_put_var_realx (ncid, landmask_id   , lmask)
   ! call wrap_put_var_realx (ncid, lgmlandmask_id   , lgmlandmask)
 
-  call wrap_close(ncid)
+  call wrap_close(ncid, path=fileog)
 
 ! -----------------------------------------------------------------
 ! create netcdf file 2 pft
@@ -510,25 +511,25 @@ program convert_mksrf
 
   name = 'northern edge of surface grid'
   unit = 'degrees north'
-  call wrap_def_var (ncid2, 'EDGEN', nf_float, 0, 0, edgen_id)
+  call wrap_def_var (ncid2, 'EDGEN', nf_float, 0, dim0_id, edgen_id)
   call wrap_put_att_text (ncid2, edgen_id, 'long_name', name)
   call wrap_put_att_text (ncid2, edgen_id, 'units'    , unit)
 
   name = 'eastern edge of surface grid'
   unit = 'degrees east'
-  call wrap_def_var (ncid2, 'EDGEE', nf_float, 0, 0, edgee_id)
+  call wrap_def_var (ncid2, 'EDGEE', nf_float, 0, dim0_id, edgee_id)
   call wrap_put_att_text (ncid2, edgee_id, 'long_name', name)
   call wrap_put_att_text (ncid2, edgee_id, 'units'    , unit)
 
   name = 'southern edge of surface grid'
   unit = 'degrees north'
-  call wrap_def_var (ncid2, 'EDGES', nf_float, 0, 0, edges_id)
+  call wrap_def_var (ncid2, 'EDGES', nf_float, 0, dim0_id, edges_id)
   call wrap_put_att_text (ncid2, edges_id, 'long_name', name)
   call wrap_put_att_text (ncid2, edges_id, 'units'    , unit)
 
   name = 'western edge of surface grid'
   unit = 'degrees east'
-  call wrap_def_var (ncid2, 'EDGEW', nf_float, 0, 0, edgew_id)
+  call wrap_def_var (ncid2, 'EDGEW', nf_float, 0, dim0_id, edgew_id)
   call wrap_put_att_text (ncid2, edgew_id, 'long_name', name)
   call wrap_put_att_text (ncid2, edgew_id, 'units'    , unit)
 
@@ -585,7 +586,7 @@ program convert_mksrf
   call wrap_put_var_realx (ncid2, pct_pft_id    , pct_nat_pft)
   call wrap_put_var_realx (ncid2, landmask_id   , lmask)
 
-  call wrap_close(ncid2)
+  call wrap_close(ncid2,path=fileop)
 
 
 
@@ -633,25 +634,25 @@ program convert_mksrf
 
   name = 'northern edge of surface grid'
   unit = 'degrees north'
-  call wrap_def_var (ncid, 'EDGEN', nf_float, 0, 0, edgen_id)
+  call wrap_def_var (ncid, 'EDGEN', nf_float, 0, dim0_id, edgen_id)
   call wrap_put_att_text (ncid, edgen_id, 'long_name', name)
   call wrap_put_att_text (ncid, edgen_id, 'units'    , unit)
 
   name = 'eastern edge of surface grid'
   unit = 'degrees east'
-  call wrap_def_var (ncid, 'EDGEE', nf_float, 0, 0, edgee_id)
+  call wrap_def_var (ncid, 'EDGEE', nf_float, 0, dim0_id, edgee_id)
   call wrap_put_att_text (ncid, edgee_id, 'long_name', name)
   call wrap_put_att_text (ncid, edgee_id, 'units'    , unit)
 
   name = 'southern edge of surface grid'
   unit = 'degrees north'
-  call wrap_def_var (ncid, 'EDGES', nf_float, 0, 0, edges_id)
+  call wrap_def_var (ncid, 'EDGES', nf_float, 0, dim0_id, edges_id)
   call wrap_put_att_text (ncid, edges_id, 'long_name', name)
   call wrap_put_att_text (ncid, edges_id, 'units'    , unit)
 
   name = 'western edge of surface grid'
   unit = 'degrees east'
-  call wrap_def_var (ncid, 'EDGEW', nf_float, 0, 0, edgew_id)
+  call wrap_def_var (ncid, 'EDGEW', nf_float, 0, dim0_id, edgew_id)
   call wrap_put_att_text (ncid, edgew_id, 'long_name', name)
   call wrap_put_att_text (ncid, edgew_id, 'units'    , unit)
 
@@ -706,11 +707,10 @@ program convert_mksrf
   call wrap_put_var_realx (ncid, pct_wetland_id, pct_wetland)
   call wrap_put_var_realx (ncid, landmask_id   , lmask)
 
-  call wrap_close(ncid)
+  call wrap_close(ncid,path=fileol)
 
 
-end program convert_mksrf
-
+contains
 
 !===============================================================================
 
@@ -797,16 +797,21 @@ end subroutine wrap_put_var_int
   
 !===============================================================================
 
-subroutine wrap_close (ncid)
+subroutine wrap_close (ncid,path)
   implicit none
   include 'netcdf.inc'
   integer, parameter :: r8 = selected_real_kind(12)
   integer :: ncid
+  character(len=*), optional, intent(in):: path
   integer :: ret
   ret = nf_close (ncid)
   if (ret.ne.NF_NOERR) then
      write(6,*)'WRAP_CLOSE: nf_close failed for id ',ncid
      call handle_error (ret)
+  end if
+  if ( present(path) )then
+     write(6,*)'wrap_close: protect from write'
+     call system( "chmod u-w "//path )
   end if
 end subroutine wrap_close
 
@@ -863,3 +868,4 @@ subroutine wrap_get_var8 (nfid, varid, arr)
 end subroutine wrap_get_var8
 
 !================================
+end program convert_mksrf
