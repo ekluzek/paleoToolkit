@@ -14,7 +14,7 @@ begin
    outglcfilename = "mksrf_glacier_lgm21ka.wGIA.wLGMicedam.c"+sdate+".nc";
    print( "Open: "+outglcfilename );
    if ( systemfunc("test -f "+outglcfilename+"; echo $?" ) .eq. 0 )then
-      system( "/bin/rm "+outglcfilename );
+      system( "/bin/rm -f "+outglcfilename );
    end if
    nco = addfile( outglcfilename, "c" )
    ingiafilename = "/gpfs/fs1/work/sbradley/CESM2.0_SETUP/GIA_CAM-CISM/CAM-CLM/Masks_USGS-huy3-S1D_21_10min_2019.nc"
@@ -171,23 +171,29 @@ begin
    do i = 0, dimsizes(vars)-1
       print( "var: "+vars(i) );
       if ( vars(i) .eq. "PCT_GLACIER" )then
+         print( "use pct_glc" );
          nco->$vars(i)$ = doubletofloat(pct_glc)
       else
         if ( vars(i) .eq. "PCT_GLC_GIC" )then
+           print( "use zero" );
            nco->$vars(i)$ = 0.0
         else
            if ( vars(i) .eq. "PCT_GLC_ICESHEET" )then
+              print( "use HFpct_gec" );
               nco->$vars(i)$ = doubletofloat( HFpct_gec )
            else
               if ( vars(i) .eq. "BIN_CENTERS" )then
+                 print( "use bin_centers" );
                  nco->$vars(i)$ = (/ bin_centers /)
               else
                  if ( vars(i) .eq. "LANDMASK" )then
+                    print( "use landmask" );
                     nco->$vars(i)$ = (/ landmask /)
                  ;
                  ; Otherwise just copy from the base file
                  ;
                  else
+                    print( "copy" );
                     nco->$vars(i)$ = (/ nc->$vars(i)$ /)
                  end if
               end if
@@ -196,6 +202,7 @@ begin
       end if
 
    end do
+   system("chmod u-w "+outglcfilename );
    print( "" );
    print( "Successfully, regridded file" );
 end

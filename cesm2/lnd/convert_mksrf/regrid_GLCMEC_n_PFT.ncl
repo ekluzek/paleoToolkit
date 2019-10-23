@@ -183,17 +183,17 @@ begin
 
    print( "Open : "+outglacierfile );
    if ( systemfunc("test -f "+outglacierfile+"; echo $?" ) .eq. 0 )then
-      system( "/bin/rm "+outglacierfile );
+      system( "/bin/rm -f "+outglacierfile );
    end if
    nco_glc = addfile( outglacierfile, "c" );
    print( "Open : "+outpftfile );
    if ( systemfunc("test -f "+outpftfile+"; echo $?" ) .eq. 0 )then
-      system( "/bin/rm "+outpftfile );
+      system( "/bin/rm -f "+outpftfile );
    end if
    nco_pft = addfile( outpftfile, "c" );
    print( "Open : "+outlakfile );
    if ( systemfunc("test -f "+outlakfile+"; echo $?" ) .eq. 0 )then
-      system( "/bin/rm "+outlakfile );
+      system( "/bin/rm -f "+outlakfile );
    end if
    nco_lak = addfile( outlakfile, "c" );
    ;
@@ -210,6 +210,9 @@ begin
    delete( nclak );
    delete( ncgrd );
 
+   system("chmod u-w "+outglacierfile );
+   system("chmod u-w "+outpftfile );
+   system("chmod u-w "+outlakfile );
    print( "" );
    print( "Successfully regrid files" );
 end
