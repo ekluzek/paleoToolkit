@@ -19,9 +19,9 @@ begin
   path   = "./"
   input  = "$DIN_LOC_ROOT"
 
-  finglc = "mksrf_glacier_lgm21ka.wGIA.wLGMicedam_afterconv.c191023.nc"
-  finlan = "mksrf_lanwatnDepth_lgm21ka.wLGMicedam.c191023.nc"
-  finpft = "mksrf_pft_lgm21ka.wLGMicedam.c191023.nc"
+  finglc = "mksrf_glacier_lgm21ka.wGIA.wLGMicedam_afterconv.c191029.nc"
+  finlan = "mksrf_lanwatnDepth_lgm21ka.wLGMicedam.c191029.nc"
+  finpft = "mksrf_pft_lgm21ka.biome4VEG.wLGMicedam.c191029.nc"
 
   ifile1 = path+finglc+".nc"
   ifile2 = path+finlan+".nc"
