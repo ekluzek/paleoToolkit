@@ -4,11 +4,11 @@
   !-----------------------------------------------------------------
   filei  = 'mksrf_glacier_lgm21ka.wGIA.wLGMicedam.c191023.nc'
   fileig = 'mksrf_glacier_lgm21ka.wGIA.wLGMicedam.c191023.nc'
-  fileip = 'mksrf_pft_lgm21ka.biome4VEG.191028.nc'
+  fileip = 'mksrf_pft_lgm21ka_biome_modTABLE_c191204.nc'
   fileiw = '/gpfs/fs1/p/cesmdata/cseg/inputdata/lnd/clm2/rawdata/mksrf_lanwat.050425.nc'
   fileil = 'mksrf_LakePnDepth_0.5x0.5_simyr2004_csp1k_wLGMicedam_c191023.nc'
-  fileog = 'mksrf_glacier_lgm21ka.wGIA.wLGMicedam_afterconv.c191029.nc'
-  fileop = 'mksrf_pft_lgm21ka.biome4VEG.wLGMicedam.c191029.nc'
-  fileol = 'mksrf_lanwatnDepth_lgm21ka.wLGMicedam.c191029.nc'
+  fileog = 'mksrf_glacier_lgm21ka.wGIA.wLGMicedam_afterconv.c191204.nc'
+  fileop = 'mksrf_pft_lgm21ka.biome4VEG.wLGMicedam.c191204.nc'
+  fileol = 'mksrf_lanwatnDepth_lgm21ka.wLGMicedam.c191204.nc'
   !-----------------------------------------------------------------
 /
