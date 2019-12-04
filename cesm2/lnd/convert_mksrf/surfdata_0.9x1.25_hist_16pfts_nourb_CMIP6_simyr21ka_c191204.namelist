@@ -47,8 +47,8 @@
  mksrf_fhrvtyp  = '/glade/p/cesm/cseg/inputdata/lnd/clm2/rawdata/pftcftdynharv.0.25x0.25.LUH2.simyrPtVg.c181106/mksrf_landuse_potvegclm50_LUH2.c181106.nc'
  mksrf_fsoicol  = '/gpfs/fs1/work/erik/paleoToolkit/cesm2/lnd/convert_mksrf/mksrf_soilcol_21ka.191029.nn.nc'
  mksrf_flai     = '/gpfs/fs1/work/erik/paleoToolkit/cesm2/lnd/convert_mksrf/mksrf_lai_global_21ka.191029.nn.nc'
- fsurdat        = 'surfdata_0.9x1.25_hist_16pfts_nourb_CMIP6_simyr21ka_c191029.nc'
- fsurlog        = 'surfdata_0.9x1.25_hist_16pfts_nourb_CMIP6_simyr21ka_c191029.log'
+ fsurdat        = 'surfdata_0.9x1.25_hist_16pfts_nourb_CMIP6_simyr21ka_c191204.nc'
+ fsurlog        = 'surfdata_0.9x1.25_hist_16pfts_nourb_CMIP6_simyr21ka_c191204.log'
  mksrf_fdynuse  = ''
  fdyndat        = ''
  numpft = 16
